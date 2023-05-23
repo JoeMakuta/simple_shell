@@ -1,4 +1,4 @@
-#include "main.h"
+#include "entry.h"
 
 /**
  * free_d - frees data struct
