@@ -19,7 +19,6 @@
 /* Points to an array of pointers to strings called the "environment" */
 extern char **environ;
 
-
 /**
  * struct data - struct that contains all relevant data on runtime
  * @av: argument vector
@@ -30,6 +29,7 @@ extern char **environ;
  * @_environ: environment variable
  * @pid: process ID of the shell
  */
+
 typedef struct data
 {
 	char **av;
@@ -47,6 +47,7 @@ typedef struct data
  * @next: next node
  * Description: The linked list to store separators
  */
+ 
 typedef struct sep_l
 {
 	char separator;
@@ -227,3 +228,6 @@ void _help_alias(void);
 void _help_cd(void);
 
 /* get_help.c */
+int _help(data_t *datash);
+
+#endif
