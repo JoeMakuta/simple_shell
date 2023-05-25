@@ -1,9 +1,6 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -11,13 +8,28 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <limits.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 
-#define BUFSIZE 1024
 #define TOKEN_BUFSIZE 128
+#define BUFSIZE 1024
 #define TOKEN_DELIM " \t\r\n\a"
 
 /* Points to an array of pointers to strings called the "environment" */
 extern char **environ;
+
+/**
+ * struct sep_list - A single linked list
+ * @separator: ; | &
+ * @next: next node
+ * Description: The linked list to store separators
+ */
+typedef struct sep_l
+{
+	char separator;
+	struct sep_l *next;
+} sep_l_t;
 
 /**
  * struct data - struct that contains all relevant data on runtime
@@ -29,7 +41,6 @@ extern char **environ;
  * @_environ: environment variable
  * @pid: process ID of the shell
  */
-
 typedef struct data
 {
 	char **av;
@@ -40,19 +51,6 @@ typedef struct data
 	char **_environ;
 	char *pid;
 } data_t;
-
-/**
- * struct sep_list - A single linked list
- * @separator: ; | &
- * @next: next node
- * Description: The linked list to store separators
- */
- 
-typedef struct sep_l
-{
-	char separator;
-	struct sep_l *next;
-} sep_l_t;
 
 /**
  * struct line_list - A single linked list
@@ -93,6 +91,13 @@ typedef struct bltin_s
 	int (*f)(data_t *datash);
 } bltin_t;
 
+/* cmd_exec.c */
+int is_cudir(char *path, int *i);
+char *_which(char *cmd, char **_environ);
+int is_exec(data_t *datash);
+int check_err_cmd(char *dir, data_t *datash);
+int cmd_exc(data_t *datash);
+
 /* aux_lists.c */
 sep_l_t *_add_sep(sep_l_t **head, char sep);
 void free_sep_l(sep_l_t **head);
@@ -110,6 +115,15 @@ int _strcmp(char *s1, char *s2);
 char *_strchr(char *s, char c);
 int _strspn(char *s, char *accept);
 
+/* aux_str3.c */
+void rev_string(char *s);
+/* check_syntax_error.c */
+int count_char(char *input, int i);
+int error_sy(char *input, int i, char last);
+int f_char(char *input, int *i);
+void print_sy_err(data_t *datash, char *input, int i, int bool);
+int check_sy_err(data_t *datash, char *input);
+
 /* aux_mem.c */
 void _mcpy(void *newptr, const void *ptr, unsigned int size);
 void *_ralloc(void *ptr, unsigned int old_size, unsigned int new_size);
@@ -122,21 +136,12 @@ int cmp_chr(char str[], const char *delim);
 char *_strtok(char str[], const char *delim);
 int _isdigit(const char *s);
 
-/* aux_str3.c */
-void rev_string(char *s);
-/* check_syntax_error.c */
-int count_char(char *input, int i);
-int error_sy(char *input, int i, char last);
-int f_char(char *input, int *i);
-void print_sy_err(data_t *datash, char *input, int i, int bool);
-int check_sy_err(data_t *datash, char *input);
+/* read_line.c */
+char *rd_line(int *i_eof);
 
 /* shell_loop.c */
 char *remove_comment(char *in);
 void shell_loop(data_t *datash);
-
-/* read_line.c */
-char *rd_line(int *i_eof);
 
 /* split.c */
 char *swap_op(char *string, int type);
@@ -157,13 +162,6 @@ ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
 
 /* exec_line */
 int exc_line_cm(data_t *datash);
-
-/* cmd_exec.c */
-int is_cudir(char *path, int *i);
-char *_which(char *cmd, char **_environ);
-int is_exec(data_t *datash);
-int check_err_cmd(char *dir, data_t *datash);
-int cmd_exc(data_t *datash);
 
 /* env1.c */
 char *_getenv_v(const char *name, char **_environ);
@@ -208,6 +206,10 @@ char *error_syntax(char **args);
 char *error_permission(char **args);
 char *e_path_126(data_t *datash);
 
+/* aux_help2.c */
+void _help_bltin(void);
+void _help_alias(void);
+void _help_cd(void);
 
 /* get_error.c */
 int _error(data_t *datash, int eval);
@@ -221,11 +223,6 @@ void _help_setenv(void);
 void _help_unsetenv(void);
 void _help_gen(void);
 void _help_exit(void);
-
-/* aux_help2.c */
-void _help_bltin(void);
-void _help_alias(void);
-void _help_cd(void);
 
 /* get_help.c */
 int _help(data_t *datash);

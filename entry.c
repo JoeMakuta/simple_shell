@@ -1,25 +1,6 @@
 #include "entry.h"
 
 /**
- * free_d - frees data struct
- *
- * @data: The data struct
- * Return: Nothing
- */
-void free_d(data_t *data)
-{
-	unsigned int i;
-
-	for (i = 0; data->_environ[i]; i++)
-	{
-		free(data->_environ[i]);
-	}
-
-	free(data->_environ);
-	free(data->pid);
-}
-
-/**
  * init_data - Initialize data structure
  *
  * @data: The data struct
@@ -48,6 +29,25 @@ void init_data(data_t *data, char **av)
 
 	data->_environ[i] = NULL;
 	data->pid = _itoa(getpid());
+}
+
+/**
+ * free_d - frees data struct
+ *
+ * @data: The data struct
+ * Return: Nothing
+ */
+void free_d(data_t *data)
+{
+	unsigned int i;
+
+	for (i = 0; data->_environ[i]; i++)
+	{
+		free(data->_environ[i]);
+	}
+
+	free(data->_environ);
+	free(data->pid);
 }
 
 /**
